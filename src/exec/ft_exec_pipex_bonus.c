@@ -6,7 +6,7 @@
 /*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 16:48:28 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/05/21 14:37:32 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/05/21 17:46:58 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,9 @@ static void ft_close(int *fd)
 static pid_t	ft_pipe(t_simple_cmds *cmd, char **envp, int nb, int argc)
 {
 	pid_t	pid;
-
-	//printf("cmd->str ----------: %d - %s\n", nb, *(cmd->str));
+	if(cmd->redirections)
+		printf("cmd->str ----------: %d - %s\n", nb, cmd->redirections->token);
+	//write(2, (char *)cmd->redirections, ft_strlen(cmd->redirections));
 	//printf("nb = %d ----- argc = %d\n\n", nb, argc);
 	// derniere modification
 	if (nb < argc)
@@ -109,6 +110,11 @@ static pid_t	ft_pipe(t_simple_cmds *cmd, char **envp, int nb, int argc)
 		exit(1);
 	if (pid == 0)
 	{
+		if (cmd->redirections)
+		{
+			ft_check_redirection(cmd->redirections);
+			ft_setup_process(cmd);
+		}
 		//printf("ARRive ici avant exec\n");
 		if (nb > 0) {
 			// printf("icicic\n\n");

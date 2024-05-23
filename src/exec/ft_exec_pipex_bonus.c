@@ -6,7 +6,7 @@
 /*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 16:48:28 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/05/21 17:46:58 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/05/23 17:56:52 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,62 +44,77 @@ static void	exec(char **cmd, char **envp)
 			//exit(EXIT_FAILURE);
 	//}
 }
-
-static void	here_txt(char **argv, int *p_fd)
+/*!!!!!!!!!!!!!!!!!!!!!je dois faire ca encore!!!!!!!!!!!!!!!!!*/
+static void	here_txt(char *limiter, t_simple_cmds *cmd)
 {
 	char	*line;
 
 	//printf("6");
-	close(p_fd[0]);
 	while (1)
 	{
 		line = get_next_line(0);
 		//printf("%s", line);
 		if (!line)
 			exit(EXIT_FAILURE);
-		if (!ft_strncmp(line, argv[2], ft_strlen(argv[2])))
+		if (!ft_strncmp(line, limiter, ft_strlen(limiter)))
 		{
 			//printf("0\n");
 			//printf("%s\n", line);
 			free(line);
 			exit(EXIT_SUCCESS);
 		}
-		ft_putstr_fd(line, p_fd[1]);
+		ft_putstr_fd(line, cmd->p_fd[1]);
 		free(line);
 	}
 }
 
-static void	here_doc(char **argv)
-{
-	pid_t	pid;
-	int		p_fd[2];
-	//printf("4");
-	if (pipe(p_fd) == -1)
-		exit(1);
-	pid = fork();
-	if (pid == -1)
-		exit(1);
-	if (!pid)
-		here_txt(argv, p_fd);
-	else
-	{
-		close(p_fd[1]);
-		dup2(p_fd[0], 0);
-		wait(0);
-	}
-}
+//static void	here_doc(char **argv)
+//{
+//	pid_t	pid;
+//	int		p_fd[2];
+//	//printf("4");
+//	if (pipe(p_fd) == -1)
+//		exit(1);
+//	pid = fork();
+//	if (pid == -1)
+//		exit(1);
+//	if (!pid)
+//		here_txt(argv, p_fd);
+//	else
+//	{
+//		close(p_fd[1]);
+//		dup2(p_fd[0], 0);
+//		wait(0);
+//	}
+//}
 static void ft_close(int *fd)
 {
 	close(*fd);
 	*fd = -1;
 }
+static void	ft_check_redirection(t_simple_cmds *cmd, int fd)
+{
+	if (!cmd)
+		return ;
+	if (!ft_strncmp(cmd->redirections->token, ">", 1) && ft_strlen(cmd->redirections->token) == 1){
+		fd = open(cmd->redirections->next->token, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		dup2(fd, 1);}
+	if (!ft_strncmp(cmd->redirections->token, ">>", 2) && ft_strlen(cmd->redirections->token) == 2){
+		fd = open(cmd->redirections->next->token, O_WRONLY | O_CREAT | O_APPEND, 0777);
+		dup2(fd, 1);}
+	if (!ft_strncmp(cmd->redirections->token, "<<", 1) && ft_strlen(cmd->redirections->token) == 2){
+		here_txt(cmd->redirections->next->token, cmd);
+	}
+	if (fd == - 1)
+		exit(0);
+}
+
 
 static pid_t	ft_pipe(t_simple_cmds *cmd, char **envp, int nb, int argc)
 {
 	pid_t	pid;
-	if(cmd->redirections)
-		printf("cmd->str ----------: %d - %s\n", nb, cmd->redirections->token);
-	//write(2, (char *)cmd->redirections, ft_strlen(cmd->redirections));
+	int		fd = 0;
+	printf("cmd->str ----------: %d - %s\n", nb, *cmd->str);
 	//printf("nb = %d ----- argc = %d\n\n", nb, argc);
 	// derniere modification
 	if (nb < argc)
@@ -110,11 +125,6 @@ static pid_t	ft_pipe(t_simple_cmds *cmd, char **envp, int nb, int argc)
 		exit(1);
 	if (pid == 0)
 	{
-		if (cmd->redirections)
-		{
-			ft_check_redirection(cmd->redirections);
-			ft_setup_process(cmd);
-		}
 		//printf("ARRive ici avant exec\n");
 		if (nb > 0) {
 			// printf("icicic\n\n");
@@ -125,6 +135,12 @@ static pid_t	ft_pipe(t_simple_cmds *cmd, char **envp, int nb, int argc)
 			dup2(cmd->p_fd_output[1], 1);
 			close(cmd->p_fd_output[0]);
 			close(cmd->p_fd_output[1]);
+		}
+		if (cmd->redirections)
+		{
+			ft_check_redirection(cmd, fd);
+			//fd = open(cmd->redirections->next->token, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+			//dup2(fd, 1);
 		}
 		// write(2, *cmd->str, ft_strlen(*cmd->str));
 		exec(cmd->str, envp);

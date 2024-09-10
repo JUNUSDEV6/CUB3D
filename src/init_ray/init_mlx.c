@@ -6,7 +6,7 @@
 /*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:11:35 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/05 16:00:13 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:29:35 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ void	malloc_error(void)
 	perror("error malloc");
 	exit(1);
 }
+
+#define CEILING_COLOR 0x000000  // Light Blue color for the ceiling
+#define FLOOR_COLOR   0x9000FF  // Brown color for the floor
 
 int	worldMap[24][24] = {
 							{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -47,14 +50,24 @@ int	worldMap[24][24] = {
 
 void	ver_line(t_cub *cub, int x, int y1, int y2, int color)
 {
-	int	y;
-
-	y = y1;
-	while (y <= y2)
+	if (y1 < 0)
+		y1 = 0;
+	if (y2 >= height)
+		y2 = height - 1;
+	
+	for (int i = y1; i <= y2; i++)
 	{
-		mlx_pixel_put(cub->mlx_ptr, cub->mlx_window, x, y, color);
-		y++;
+		cub->img_data[i * width + x] = color;
 	}
+	
+	//int	y;
+//
+	//y = y1;
+	//while (y <= y2)
+	//{
+	//	mlx_pixel_put(cub->mlx_ptr, cub->mlx_window, x, y, color);
+	//	y++;
+	//}
 }
 
 void	calc(t_cub *cub)
@@ -76,8 +89,8 @@ void	calc(t_cub *cub)
 		double sideDistY;
 		
 		 //length of ray from one x or y-side to next x or y-side
-		double deltaDistX = fabs(1 / rayDirX);
-		double deltaDistY = fabs(1 / rayDirY);
+		double deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
+		double deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
 		double perpWallDist;
 		
 		//what direction to step in x or y-direction (either +1 or -1)
@@ -142,6 +155,14 @@ void	calc(t_cub *cub)
 		if(drawEnd >= height)
 			drawEnd = height - 1;
 
+		for (int y = 0; y < drawStart; y++)
+			if (y >= 0 && y < height)
+				cub->img_data[y * width + x] =  CEILING_COLOR;
+		
+		for (int y = drawEnd + 1; y < height; y++)
+			if (y >= 0 && y < height)
+				cub->img_data[y * width + x] = FLOOR_COLOR;
+
 		int	color;
 		if (worldMap[mapY][mapX] == 1)
 			color = 0xFF0000;
@@ -155,12 +176,13 @@ void	calc(t_cub *cub)
 			color = 0xFFFF00;
 		
 		if (side == 1)
-			color = color / 2;
+			color = color / 0.2;
 
 		ver_line(cub, x, drawStart, drawEnd, color);
 		
 		x++;
 	}
+	mlx_put_image_to_window(cub->mlx_ptr, cub->mlx_window, cub->mlx_img, 0, 0);
 }
 
 int	main_loop(t_cub *cub)
@@ -232,7 +254,7 @@ void	init_cub(t_cub *cub)
 		malloc_error();
 	cub->mlx_window = mlx_new_window(cub->mlx_ptr, width, height, "cub3d");
 	cub->mlx_img = mlx_new_image(cub->mlx_ptr, width, height);
-	cub->img_data = (int *)mlx_get_data_addr(cub->img.img, cub->img.bpp, cub->img.line_leng, cub->img.endian);
+	cub->img_data = (int *)mlx_get_data_addr(cub->mlx_img, &cub->img.bpp, &cub->img.line_leng, &cub->img.endian);
 	if (cub->mlx_window == NULL)
 	{
 		mlx_destroy_window(cub->mlx_ptr, cub->mlx_window);

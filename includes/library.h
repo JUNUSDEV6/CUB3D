@@ -9,6 +9,7 @@
 # include <errno.h>
 # include <math.h>
 # include <string.h>
+# include <stdbool.h>
 
 # define width 640
 # define height 480
@@ -121,6 +122,24 @@ typedef struct s_cub
 	double	m_s;
 	double	r_s;
 }	t_cub;
+
+typedef struct	s_raycst
+{
+	double	camera_x;
+	double	ray_dir_x;
+	double	ray_dir_y;
+	double	side_dist_x;
+	double	side_dist_y;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	double	per_wall_dist;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	int		hit;
+	int		side;
+}				t_raycst;
 
 // -------------------------------- INIT & RENDER -------------------------------- //
 void	init_cub(t_cub *cub);

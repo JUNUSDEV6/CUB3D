@@ -6,7 +6,7 @@
 /*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:11:35 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/10 14:29:35 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:49:33 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,93 +59,76 @@ void	ver_line(t_cub *cub, int x, int y1, int y2, int color)
 	{
 		cub->img_data[i * width + x] = color;
 	}
-	
-	//int	y;
-//
-	//y = y1;
-	//while (y <= y2)
-	//{
-	//	mlx_pixel_put(cub->mlx_ptr, cub->mlx_window, x, y, color);
-	//	y++;
-	//}
 }
 
 void	calc(t_cub *cub)
 {
+	t_raycst	raycst;
+	
 	int	x;
 
 	x = 0;
 	while (x < width)
 	{
-		double cameraX = 2 * x / (double)width - 1;
-		double rayDirX = cub->dirX + cub->planeX * cameraX;
-		double rayDirY = cub->dirY + cub->planeY * cameraX;
-		
-		int mapX = (int)cub->posX;
-		int mapY = (int)cub->posY;
-
-		//length of ray from current position to next x or y-side
-		double sideDistX;
-		double sideDistY;
-		
+		raycst.camera_x = 2 * x / (double)width - 1;
+		raycst.ray_dir_x = cub->dirX + cub->planeX * raycst.camera_x;
+		raycst.ray_dir_y = cub->dirY + cub->planeY * raycst.camera_x;
+		raycst.map_x = (int)cub->posX;
+		raycst.map_y = (int)cub->posY;
 		 //length of ray from one x or y-side to next x or y-side
-		double deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
-		double deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
-		double perpWallDist;
-		
+		raycst.delta_dist_x = (raycst.ray_dir_x == 0) ? 1e30 : fabs(1 / raycst.ray_dir_x);
+		raycst.delta_dist_y = (raycst.ray_dir_y == 0) ? 1e30 : fabs(1 / raycst.ray_dir_y);
 		//what direction to step in x or y-direction (either +1 or -1)
-		int stepX;
-		int stepY;
 		
-		int hit = 0; //was there a wall hit?
-		int side; //was a NS or a EW wall hit?
+		raycst.hit = 0; //was there a wall raycst.hit?
+		//raycst.side; //was a NS or a EW wall raycst.hit?
 
-		if (rayDirX < 0)
+		if (raycst.ray_dir_x < 0)
 		{
-			stepX = -1;
-			sideDistX = (cub->posX - mapX) * deltaDistX;
+			raycst.step_x = -1;
+			raycst.side_dist_x = (cub->posX - raycst.map_x) * raycst.delta_dist_x;
 		}
 		else
 		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - cub->posX) * deltaDistX;
+			raycst.step_x = 1;
+			raycst.side_dist_x = (raycst.map_x + 1.0 - cub->posX) * raycst.delta_dist_x;
 		}
-		if (rayDirY < 0)
+		if (raycst.ray_dir_y < 0)
 		{
-			stepY = -1;
-			sideDistY = (cub->posY - mapY) * deltaDistY;
+			raycst.step_y = -1;
+			raycst.side_dist_y = (cub->posY - raycst.map_y) * raycst.delta_dist_y;
 		}
 		else
 		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - cub->posY) * deltaDistY;
+			raycst.step_y = 1;
+			raycst.side_dist_y = (raycst.map_y + 1.0 - cub->posY) * raycst.delta_dist_y;
 		}
 
-		while (hit == 0)
+		while (raycst.hit == 0)
 		{
 			//jump to next map square, OR in x-direction, OR in y-direction
-			if (sideDistX < sideDistY)
+			if (raycst.side_dist_x < raycst.side_dist_y)
 			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
+				raycst.side_dist_x += raycst.delta_dist_x;
+				raycst.map_x += raycst.step_x;
+				raycst.side = 0;
 			}
 			else
 			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
+				raycst.side_dist_y += raycst.delta_dist_y;
+				raycst.map_y += raycst.step_y;
+				raycst.side = 1;
 			}
 			//Check if ray has hit a wall
-			if (worldMap[mapX][mapY] > 0) hit = 1;
+			if (worldMap[raycst.map_x][raycst.map_y] > 0) raycst.hit = 1;
 		}
-		if (side == 0)
-			perpWallDist = (mapX - cub->posX + (1 - stepX) / 2) / rayDirX;
+		if (raycst.side == 0)
+			raycst.per_wall_dist = (raycst.map_x - cub->posX + (1 - raycst.step_x) / 2) / raycst.ray_dir_x;
 		else
-			perpWallDist = (mapY - cub->posY + (1 - stepY) / 2) / rayDirY;
+			raycst.per_wall_dist = (raycst.map_y - cub->posY + (1 - raycst.step_y) / 2) / raycst.ray_dir_y;
 
 		//Calculate height of line to draw on screen
-		int lineHeight = (int)(height / perpWallDist);
+		int lineHeight = (int)(height / raycst.per_wall_dist);
 
 		//calculate lowest and highest pixel to fill in current stripe
 		int drawStart = -lineHeight / 2 + height / 2;
@@ -164,18 +147,18 @@ void	calc(t_cub *cub)
 				cub->img_data[y * width + x] = FLOOR_COLOR;
 
 		int	color;
-		if (worldMap[mapY][mapX] == 1)
+		if (worldMap[raycst.map_y][raycst.map_x] == 1)
 			color = 0xFF0000;
-		else if (worldMap[mapY][mapX] == 2)
+		else if (worldMap[raycst.map_y][raycst.map_x] == 2)
 			color = 0x00FF00;
-		else if (worldMap[mapY][mapX] == 3)
+		else if (worldMap[raycst.map_y][raycst.map_x] == 3)
 			color = 0x0000FF;
-		else if (worldMap[mapY][mapX] == 4)
+		else if (worldMap[raycst.map_y][raycst.map_x] == 4)
 			color = 0xFFFFFF;
 		else
 			color = 0xFFFF00;
 		
-		if (side == 1)
+		if (raycst.side == 1)
 			color = color / 0.2;
 
 		ver_line(cub, x, drawStart, drawEnd, color);
@@ -188,13 +171,31 @@ void	calc(t_cub *cub)
 int	main_loop(t_cub *cub)
 {
 	calc(cub);
-	// mlx_put_image_to_window(cub->mlx, info->win, &info->img, 0, 0);
-
 	return (0);
 }
 
-int	key_press(int key, t_cub *cub)
+static void	calcul_ks_ka(t_cub *cub, double old_dirx, double old_planex, bool boolean)
 {
+	if (boolean == true)
+	{
+		cub->dirX = cub->dirX * cos(-cub->r_s) - cub->dirY * sin(-cub->r_s);
+		cub->dirY = old_dirx * sin(-cub->r_s) + cub->dirY * cos(-cub->r_s);
+		cub->planeX = cub->planeX * cos(-cub->r_s) - cub->planeY * sin(-cub->r_s);
+		cub->planeY = old_planex * sin(-cub->r_s) + cub->planeY * cos(-cub->r_s);
+	}
+	else
+	{
+		cub->dirX = cub->dirX * cos(cub->r_s) - cub->dirY * sin(cub->r_s);
+		cub->dirY = old_dirx * sin(cub->r_s) + cub->dirY * cos(cub->r_s);
+		cub->planeX = cub->planeX * cos(cub->r_s) - cub->planeY * sin(cub->r_s);
+		cub->planeY = old_planex * sin(cub->r_s) + cub->planeY * cos(cub->r_s);
+	}
+}
+
+int	key_press(int key, t_cub *cub, double old_dirx, double old_planex)
+{
+	old_dirx = cub->dirX;
+	old_planex = cub->planeX;
 	if (key == K_W)
 	{
 		if (!worldMap[(int)(cub->posX + cub->dirX * cub->m_s)][(int)(cub->posY)])
@@ -202,7 +203,6 @@ int	key_press(int key, t_cub *cub)
 		if (!worldMap[(int)(cub->posX)][(int)(cub->posY + cub->dirY * cub->m_s)])
 			cub->posY += cub->dirY * cub->m_s;
 	}
-	//move backwards if no wall behind you
 	if (key == K_S)
 	{
 		if (!worldMap[(int)(cub->posX - cub->dirX * cub->m_s)][(int)(cub->posY)])
@@ -210,32 +210,15 @@ int	key_press(int key, t_cub *cub)
 		if (!worldMap[(int)(cub->posX)][(int)(cub->posY - cub->dirY * cub->m_s)])
 			cub->posY -= cub->dirY * cub->m_s;
 	}
-	//rotate to the right
 	if (key == K_D)
-	{
-		//both camera direction and camera plane must be rotated
-		double oldDirX = cub->dirX;
-		cub->dirX = cub->dirX * cos(-cub->r_s) - cub->dirY * sin(-cub->r_s);
-		cub->dirY = oldDirX * sin(-cub->r_s) + cub->dirY * cos(-cub->r_s);
-		double oldPlaneX = cub->planeX;
-		cub->planeX = cub->planeX * cos(-cub->r_s) - cub->planeY * sin(-cub->r_s);
-		cub->planeY = oldPlaneX * sin(-cub->r_s) + cub->planeY * cos(-cub->r_s);
-	}
-	//rotate to the left
+		calcul_ks_ka(cub, old_dirx, old_planex, true);
 	if (key == K_A)
-	{
-		//both camera direction and camera plane must be rotated
-		double oldDirX = cub->dirX;
-		cub->dirX = cub->dirX * cos(cub->r_s) - cub->dirY * sin(cub->r_s);
-		cub->dirY = oldDirX * sin(cub->r_s) + cub->dirY * cos(cub->r_s);
-		double oldPlaneX = cub->planeX;
-		cub->planeX = cub->planeX * cos(cub->r_s) - cub->planeY * sin(cub->r_s);
-		cub->planeY = oldPlaneX * sin(cub->r_s) + cub->planeY * cos(cub->r_s);
-	}
+		calcul_ks_ka(cub, old_dirx, old_planex, false);
 	if (key == K_ESC)
 		exit(0);
 	return (0);
 }
+
 
 void	init_cub(t_cub *cub)
 {
@@ -264,13 +247,6 @@ void	init_cub(t_cub *cub)
 	mlx_loop_hook(cub->mlx_ptr, &main_loop, cub);
 	mlx_hook(cub->mlx_window, X_EVENT_KEY_PRESS, 0, &key_press, cub);
 	mlx_loop(cub->mlx_ptr);
-	//cub->img.img_ptr = mlx_new_image(cub->mlx_ptr, WIDTH, HEIGHT);
-	//if (cub->img.img_ptr == NULL)
-	//{
-	//	free(cub->mlx_ptr);
-	//	malloc_error();
-	//}
-	//cub->img.pixels_ptr = 
 }
 
 

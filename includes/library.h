@@ -139,10 +139,21 @@ typedef struct	s_raycst
 	int		step_y;
 	int		hit;
 	int		side;
+	int		line_height;
+	int		draw_start;
+	int		draw_end;
+	int		color;
+	int		x;
 }				t_raycst;
+
+// Dans worldMap.h
+extern int worldMap[24][24];  // Déclaration externe
+
 
 // -------------------------------- INIT & RENDER -------------------------------- //
 void	init_cub(t_cub *cub);
+void	setup_raycasting(t_cub *cub, t_raycst *raycst);
+void	ver_line(t_cub *cub, int x, int y1, int y2, int color);
 // -------------------------------- PARSING -------------------------------- //
 /* get_texture */
 int		get_textures(t_cub *cub);

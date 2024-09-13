@@ -13,6 +13,7 @@ SRC_FILES =	./src/main.c \
 			./src/parsing/parsing_doubles.c \
 			./src/parsing/parsing_elements.c \
 			./src/init_ray/init_mlx.c \
+			./src/init_ray/raycasting.c \
 
 
 HEADER = includes

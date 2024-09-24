@@ -6,7 +6,7 @@
 /*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:11:35 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/23 15:06:59 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/24 11:57:11 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,23 @@ static int	key_press(int key, t_cub *cub, double old_dirx, double old_planex)
 		if (!cub->m[(int)(cub->posX)][(int)(cub->posY - cub->dirY * cub->m_s)])
 			cub->posY -= cub->dirY * cub->m_s;
 	}
-	if (key == K_D)
+	if (key == K_D)  // Strafe right
+    {
+        if (!cub->m[(int)(cub->posX + cub->planeX * cub->m_s)][(int)(cub->posY)])
+            cub->posX += cub->planeX * cub->m_s;
+        if (!cub->m[(int)(cub->posX)][(int)(cub->posY + cub->planeY * cub->m_s)])
+            cub->posY += cub->planeY * cub->m_s;
+    }
+    if (key == K_A)  // Strafe left
+    {
+        if (!cub->m[(int)(cub->posX - cub->planeX * cub->m_s)][(int)(cub->posY)])
+            cub->posX -= cub->planeX * cub->m_s;
+        if (!cub->m[(int)(cub->posX)][(int)(cub->posY - cub->planeY * cub->m_s)])
+            cub->posY -= cub->planeY * cub->m_s;
+    }
+	if (key == K_AR_R)
 		calcul_ks_ka(cub, old_dirx, old_planex, true);
-	if (key == K_A)
+	if (key == K_AR_L)
 		calcul_ks_ka(cub, old_dirx, old_planex, false);
 	if (key == K_ESC)
 		exit(0);

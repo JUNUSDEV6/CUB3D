@@ -6,7 +6,7 @@
 /*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 12:01:42 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/23 15:15:38 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:31:18 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,12 @@ static void	launch_beam(t_cub *cub, t_raycst *raycst)
 		raycst->map_y += raycst->step_y;
 		raycst->side = 1;
 	}
+	if (raycst->map_x < 0 || raycst->map_x >= cub->height_m || 
+		raycst->map_y < 0 || raycst->map_y >= cub->width_m)
+    {
+        raycst->hit = 1;  // Considérer comme un mur pour éviter le crash
+        return;
+    }
 	if (cub->m[raycst->map_x][raycst->map_y] > 0)
 		raycst->hit = 1;
 }
@@ -116,12 +122,14 @@ void	setup_raycasting(t_cub *cub, t_raycst *raycst)
 		calculate_step_and_side_dist(cub, raycst);
 		while (raycst->hit == 0)
 			launch_beam(cub, raycst);
-		if (raycst->side == 0)
+		if (raycst->side == 0 && raycst->ray_dir_x != 0)
 			raycst->wall_dist = (raycst->map_x - cub->posX
 					+ (1 - raycst->step_x) / 2) / raycst->ray_dir_x;
-		else
+		else if (raycst->ray_dir_y != 0)
 			raycst->wall_dist = (raycst->map_y - cub->posY
 					+ (1 - raycst->step_y) / 2) / raycst->ray_dir_y;
+		else
+			raycst->wall_dist = 0.1;
 		raycst->line_height = (int)(height / raycst->wall_dist);
 		raycst->draw_start = -raycst->line_height / 2 + height / 2;
 		if (raycst->draw_start < 0)

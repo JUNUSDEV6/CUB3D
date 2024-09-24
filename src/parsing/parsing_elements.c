@@ -50,7 +50,7 @@ static int	check_elements(char **cub)
 	if (!cub)
 		return (1);
 	i = 0;
-	while (cub[i])
+	while (cub[i] && i < 6)
 	{
 		if (check_line(cub[i]))
 			return (1);
@@ -69,7 +69,7 @@ static int	check_existence(char **cub, char *element)
 		return (1);
 	i = 0;
 	tab = NULL;
-	while (cub[i])
+	while (cub[i] && i < 6)
 	{
 		if (tab)
 			free_tab(tab);

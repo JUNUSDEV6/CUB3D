@@ -35,7 +35,8 @@ static char	**get_cub(int fd)
 	old_line = ft_calloc(sizeof(char), 1);
 	if (!old_line)
 		return (NULL);
-	while ((new_line = get_next_line(fd)))
+	new_line = get_next_line(fd);
+	while (new_line)
 	{
 		temp = old_line;
 		old_line = ft_strjoin(old_line, new_line);
@@ -45,6 +46,7 @@ static char	**get_cub(int fd)
 			free(temp);
 			return (NULL);
 		}
+		new_line = get_next_line(fd);
 	}
 	cub = ft_split(old_line, '\n');
 	free(new_line);
@@ -55,9 +57,13 @@ static char	**get_cub(int fd)
 int	parsing_infos(t_cub *cub)
 {
 	cub->cub = get_cub(cub->fd_cub);
-	if (double_infos(cub->cub) || missing_element(cub->cub))
+	if (floating_elements(cub->cub))
 		return (1);
-	if (get_textures(cub) /*|| parsing_colors(cub->cub)*/)
+	if (missing_element(cub->cub))
+		return (1);
+	if (double_infos(cub->cub))
+		return (1);
+	if (parsing_textures(cub) || parsing_colors(cub->cub))
 		return (1);
 	return (0);
 }
@@ -72,10 +78,9 @@ int	main_parsing(t_cub *cub, int argc, char **argv)
 	if (cub->fd_cub <= 0)
 		return (1);
 	if (parsing_infos(cub))
-	{
-		printf("Parsing problem\n");
 		return (1);
-	}
-	printf("Valid map ✅\n");
+	if (parsing_map(cub))
+		return (1);
+	get_colors(cub);
 	return (0);
 }

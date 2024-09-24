@@ -1,20 +1,25 @@
 NAME = cub3d
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g -g3  -Werror -finline-functions -fvectorize -fslp-vectorize -ffast-math -falign-functions -funroll-loops -fstrict-aliasing -fomit-frame-pointer -flto -Ofast -O1 -O2 -Os -O3
+CFLAGS = -fsanitize=address -g -g3  -Werror -finline-functions -fvectorize -fslp-vectorize -ffast-math -falign-functions -funroll-loops -fstrict-aliasing -fomit-frame-pointer -flto -Ofast -O1 -O2 -Os -O3
 MLXFLAGS = -lmlx -framework AppKit -framework OpenGL
 RM = rm -f
 
-SRC_FILES =	./src/main.c \
-			./src/utils.c \
+SRC_FILES = ./src/parsing/check_map.c \
+			./src/parsing/get_colors.c \
 			./src/parsing/get_textures.c \
 			./src/parsing/parsing_colors.c \
 			./src/parsing/main_parsing.c \
 			./src/parsing/parsing_doubles.c \
 			./src/parsing/parsing_elements.c \
-			./src/init_ray/init_mlx.c \
-			./src/init_ray/raycasting.c \
-
+			./src/parsing/parsing_floating.c \
+			./src/parsing/parsing_map.c \
+			./src/parsing/parsing_textures.c \
+			./src/raycasting/init_mlx.c \
+			./src/raycasting/raycasting.c \
+			./src/raycasting/utils.c \
+			./src/main.c \
+			./src/utils.c \
 
 HEADER = includes
 

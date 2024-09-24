@@ -5,7 +5,7 @@ static int	double_infos_check_utils(char **cub, char *element, int i)
 	char	**tab;
 
 	tab = NULL;
-	while (cub[++i])
+	while (cub[++i] && i < 7)
 	{
 		if (tab)
 			free_tab(tab);
@@ -16,7 +16,8 @@ static int	double_infos_check_utils(char **cub, char *element, int i)
 			return (1);
 		}
 	}
-	free_tab(tab);
+	if (tab)
+		free_tab(tab);
 	return (0);
 }
 
@@ -29,7 +30,7 @@ static int	double_infos_check(char **cub, char *element)
 		return (1);
 	i = 0;
 	tab = NULL;
-	while (cub[i])
+	while (cub[i] && i < 7)
 	{
 		if (tab)
 			free_tab(tab);

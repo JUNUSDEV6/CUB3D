@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/25 11:27:56 by rdendonc          #+#    #+#             */
+/*   Updated: 2024/09/25 11:27:57 by rdendonc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 char	*clean_stash(char *stash)
@@ -82,7 +94,6 @@ char	*create_stash(int fd, char *stash)
 	return (stash);
 }
 
-#include <stdio.h>
 char	*get_next_line(int fd)
 {
 	static char	*stash;

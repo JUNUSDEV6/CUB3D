@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdendonc <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:13:02 by rdendonc          #+#    #+#             */
-/*   Updated: 2023/04/19 17:26:56 by rdendonc         ###   ########.fr       */
+/*   Updated: 2024/09/25 11:27:12 by rdendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	*ft_memset(void *b, int c, size_t len)
 
 
 
-	printf("Avant : %s\n", str);	
+	printf("Avant : %s\n", str);
 	printf("Apres : %s\n", ft_memset(str, a, s));
 	printf("Apres : %s\n", memset(str2, '.', 5*sizeof(char)));
 	return (0);

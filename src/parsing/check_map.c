@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_map.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 15:51:12 by yohanafi          #+#    #+#             */
+/*   Updated: 2024/09/25 11:22:14 by rdendonc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "library.h"
 
-
-static int check_position(int position)
+static int	check_position(int position)
 {
 	if (position > 1)
 		return (error("Multiple initial position found in map"));
@@ -85,4 +96,3 @@ int	check_map(t_cub *cub, char **map, int length)
 	}
 	return (0);
 }
-

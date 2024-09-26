@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init_mlx.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:11:35 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/24 11:57:11 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:16:47 by rdendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "library.h"
-
-void	ver_line(t_cub *cub, t_raycst *raycst)
-{
-	int	i;
-
-	i = raycst->draw_start;
-	if (raycst->draw_start < 0)
-		raycst->draw_start = 0;
-	if (raycst->draw_end >= height)
-		raycst->draw_end = height - 1;
-	while (i <= raycst->draw_end)
-	{
-		cub->img_data[i * width + raycst->x] = raycst->color;
-		i++;
-	}
-}
 
 static int	main_loop(t_cub *cub)
 {
@@ -43,61 +27,71 @@ static void	calcul_ks_ka(t_cub *cub, double old_dirx,
 {
 	if (boolean == true)
 	{
-		cub->dirX = cub->dirX * cos(-cub->r_s) - cub->dirY * sin(-cub->r_s);
-		cub->dirY = old_dirx * sin(-cub->r_s) + cub->dirY * cos(-cub->r_s);
-		cub->planeX = cub->planeX * cos(-cub->r_s)
-			- cub->planeY * sin(-cub->r_s);
-		cub->planeY = old_planex * sin(-cub->r_s)
-			+ cub->planeY * cos(-cub->r_s);
+		cub->dirx = cub->dirx * cos(-cub->r_s) - cub->diry * sin(-cub->r_s);
+		cub->diry = old_dirx * sin(-cub->r_s) + cub->diry * cos(-cub->r_s);
+		cub->planex = cub->planex * cos(-cub->r_s)
+			- cub->planey * sin(-cub->r_s);
+		cub->planey = old_planex * sin(-cub->r_s)
+			+ cub->planey * cos(-cub->r_s);
 	}
 	else
 	{
-		cub->dirX = cub->dirX * cos(cub->r_s) - cub->dirY * sin(cub->r_s);
-		cub->dirY = old_dirx * sin(cub->r_s) + cub->dirY * cos(cub->r_s);
-		cub->planeX = cub->planeX * cos(cub->r_s)
-			- cub->planeY * sin(cub->r_s);
-		cub->planeY = old_planex * sin(cub->r_s) + cub->planeY * cos(cub->r_s);
+		cub->dirx = cub->dirx * cos(cub->r_s) - cub->diry * sin(cub->r_s);
+		cub->diry = old_dirx * sin(cub->r_s) + cub->diry * cos(cub->r_s);
+		cub->planex = cub->planex * cos(cub->r_s)
+			- cub->planey * sin(cub->r_s);
+		cub->planey = old_planex * sin(cub->r_s) + cub->planey * cos(cub->r_s);
 	}
 }
 
-static int	key_press(int key, t_cub *cub, double old_dirx, double old_planex)
+static	void	kd_ka(t_cub *cub, bool boolean)
 {
-	old_dirx = cub->dirX;
-	old_planex = cub->planeX;
+	if (boolean == true)
+	{
+		if (!cub->m[(int)(cub->posx + cub->planex * cub->m_s)]
+			[(int)(cub->posy)])
+			cub->posx += cub->planex * cub->m_s;
+		if (!cub->m[(int)(cub->posx)]
+			[(int)(cub->posy + cub->planey * cub->m_s)])
+			cub->posy += cub->planey * cub->m_s;
+	}
+	else
+	{
+		if (!cub->m[(int)(cub->posx - cub->planex * cub->m_s)]
+			[(int)(cub->posy)])
+			cub->posx -= cub->planex * cub->m_s;
+		if (!cub->m[(int)(cub->posx)]
+			[(int)(cub->posy - cub->planey * cub->m_s)])
+			cub->posy -= cub->planey * cub->m_s;
+	}
+}
+
+static int	key_press(int key, t_cub *cub)
+{
 	if (key == K_W)
 	{
-		if (!cub->m[(int)(cub->posX + cub->dirX * cub->m_s)][(int)(cub->posY)])
-			cub->posX += cub->dirX * cub->m_s;
-		if (!cub->m[(int)(cub->posX)][(int)(cub->posY + cub->dirY * cub->m_s)])
-			cub->posY += cub->dirY * cub->m_s;
+		if (!cub->m[(int)(cub->posx + cub->dirx * cub->m_s)][(int)(cub->posy)])
+			cub->posx += cub->dirx * cub->m_s;
+		if (!cub->m[(int)(cub->posx)][(int)(cub->posy + cub->diry * cub->m_s)])
+			cub->posy += cub->diry * cub->m_s;
 	}
 	if (key == K_S)
 	{
-		if (!cub->m[(int)(cub->posX - cub->dirX * cub->m_s)][(int)(cub->posY)])
-			cub->posX -= cub->dirX * cub->m_s;
-		if (!cub->m[(int)(cub->posX)][(int)(cub->posY - cub->dirY * cub->m_s)])
-			cub->posY -= cub->dirY * cub->m_s;
+		if (!cub->m[(int)(cub->posx - cub->dirx * cub->m_s)][(int)(cub->posy)])
+			cub->posx -= cub->dirx * cub->m_s;
+		if (!cub->m[(int)(cub->posx)][(int)(cub->posy - cub->diry * cub->m_s)])
+			cub->posy -= cub->diry * cub->m_s;
 	}
-	if (key == K_D)  // Strafe right
-    {
-        if (!cub->m[(int)(cub->posX + cub->planeX * cub->m_s)][(int)(cub->posY)])
-            cub->posX += cub->planeX * cub->m_s;
-        if (!cub->m[(int)(cub->posX)][(int)(cub->posY + cub->planeY * cub->m_s)])
-            cub->posY += cub->planeY * cub->m_s;
-    }
-    if (key == K_A)  // Strafe left
-    {
-        if (!cub->m[(int)(cub->posX - cub->planeX * cub->m_s)][(int)(cub->posY)])
-            cub->posX -= cub->planeX * cub->m_s;
-        if (!cub->m[(int)(cub->posX)][(int)(cub->posY - cub->planeY * cub->m_s)])
-            cub->posY -= cub->planeY * cub->m_s;
-    }
+	if (key == K_D)
+		kd_ka(cub, true);
+	if (key == K_A)
+		kd_ka(cub, false);
 	if (key == K_AR_R)
-		calcul_ks_ka(cub, old_dirx, old_planex, true);
+		calcul_ks_ka(cub, cub->dirx, cub->planex, true);
 	if (key == K_AR_L)
-		calcul_ks_ka(cub, old_dirx, old_planex, false);
+		calcul_ks_ka(cub, cub->dirx, cub->planex, false);
 	if (key == K_ESC)
-		exit(0);
+		ft_exit(cub, NULL, 0);
 	return (0);
 }
 
@@ -106,11 +100,11 @@ void	init_game(t_cub *cub)
 	init_data(cub);
 	cub->mlx_ptr = mlx_init();
 	if (cub->mlx_ptr == NULL)
-		malloc_error();
+		return ;
 	if (!get_textures(cub))
 		return ;
-	cub->mlx_window = mlx_new_window(cub->mlx_ptr, width, height, "cub3d");
-	cub->mlx_img = mlx_new_image(cub->mlx_ptr, width, height);
+	cub->mlx_window = mlx_new_window(cub->mlx_ptr, WIDTH, HEIGHT, "cub3d");
+	cub->mlx_img = mlx_new_image(cub->mlx_ptr, WIDTH, HEIGHT);
 	cub->img_data = (int *)mlx_get_data_addr(cub->mlx_img,
 			&cub->img.bpp, &cub->img.line_leng, &cub->img.endian);
 	if (cub->mlx_window == NULL)

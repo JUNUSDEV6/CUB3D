@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 15:55:15 by yohanafi          #+#    #+#             */
+/*   Updated: 2024/09/25 11:52:02 by rdendonc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "library.h"
 
 int	error(char *msg)
@@ -23,9 +35,14 @@ void	init_cub(t_cub *cub)
 	cub->f_color = 0;
 	cub->c_color = 0;
 	cub->map = NULL;
+	cub->m = NULL;
 	cub->start_i = 0;
 	cub->start_j = 0;
 	cub->start_dir = 0;
+	cub->mlx_window = NULL;
+	cub->mlx_ptr = NULL;
+	cub->img.img_ptr = NULL;
+	cub->img.pixels_ptr = NULL;
 }
 
 int	main(int argc, char **argv)
@@ -35,11 +52,7 @@ int	main(int argc, char **argv)
 	init_cub(&cub);
 	if (main_parsing(&cub, argc, argv))
 		ft_exit(&cub, NULL, EXIT_FAILURE);
-	//print_tab(cub.map);
-	//cub.mlx_ptr = mlx_init(); ?????????????
 	init_game(&cub);
-	//execution(&cub);
 	free_all(&cub);
-	//system("leaks cub3d");
 	return (0);
 }

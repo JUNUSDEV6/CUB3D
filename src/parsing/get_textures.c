@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_textures.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 15:51:20 by yohanafi          #+#    #+#             */
+/*   Updated: 2024/09/25 12:16:14 by rdendonc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "library.h"
 
 static void	*create_img(t_cub *cub, char *direction)
 {
 	char	*path;
 	void	*img;
-	char	**tab;
 
 	path = find_path(cub->cub, direction, NULL, NULL);
 	if (!path)
@@ -27,21 +38,14 @@ int	get_textures(t_cub *cub)
 	cub->textures[0] = create_img(cub, "NO");
 	if (!cub->textures[0])
 		return (error("Error: Missing NO texture"));
-
-	// Charger la texture Sud (SO)
 	cub->textures[1] = create_img(cub, "SO");
 	if (!cub->textures[1])
 		return (error("Error: Missing SO texture"));
-
-	// Charger la texture Ouest (WE)
 	cub->textures[2] = create_img(cub, "WE");
 	if (!cub->textures[2])
 		return (error("Error: Missing WE texture"));
-
-	// Charger la texture Est (EA)
 	cub->textures[3] = create_img(cub, "EA");
 	if (!cub->textures[3])
 		return (error("Error: Missing EA texture"));
-
 	return (1);
 }

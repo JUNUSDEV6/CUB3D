@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_map.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 15:51:38 by yohanafi          #+#    #+#             */
+/*   Updated: 2024/09/24 15:52:09 by yohanafi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "library.h"
 
 static char	**init_map(char **cub)
@@ -61,7 +73,7 @@ static void	find_initial_position(t_cub *cub)
 static int	is_whitespace(char c)
 {
 	if (c == ' ' || c == '\t' || c == '\n'
-	|| c == '\r' || c == '\v' || c == '\f')
+		|| c == '\r' || c == '\v' || c == '\f')
 		return (1);
 	return (0);
 }
@@ -105,9 +117,6 @@ int	parsing_map(t_cub *cub)
 		return (1);
 	}
 	free_tab(map_cpy);
-	// print_tab(cub->map);
-	// printf("\n");
 	cub->map = remove_spaces(cub->map);
-	// print_tab(cub->map);
 	return (0);
 }

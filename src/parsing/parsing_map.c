@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_map.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:51:38 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/24 15:52:09 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/26 11:31:36 by rdendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "library.h"
 
-static char	**init_map(char **cub)
+static char	**init_map(t_cub *cub, char **tab)
 {
 	int		start;
 	int		lenght;
@@ -22,16 +22,16 @@ static char	**init_map(char **cub)
 	start = 6;
 	map = NULL;
 	i = 0;
-	while (cub[start])
+	while (tab[start])
 		start++;
 	lenght = (start - 6);
 	map = (char **)malloc(sizeof(char *) * (lenght + 1));
 	if (!map)
-		return (NULL);
+		ft_exit(cub, "Problem with a malloc", EXIT_FAILURE);
 	start = 6;
 	while (i < (lenght))
 	{
-		map[i] = ft_strdup(cub[start]);
+		map[i] = ft_strdup(tab[start]);
 		if (!map[i])
 			return (NULL);
 		i++;
@@ -104,13 +104,13 @@ int	parsing_map(t_cub *cub)
 	char	**map_cpy;
 
 	length = 0;
-	cub->map = init_map(cub->cub);
+	cub->map = init_map(cub, cub->cub);
 	if (!cub->map)
-		error("Map does not exist");
+		ft_exit(cub, "Problem when creating the map", EXIT_FAILURE);
 	find_initial_position(cub);
 	while (cub->map[length])
 		length++;
-	map_cpy = init_map(cub->cub);
+	map_cpy = init_map(cub, cub->cub);
 	if (check_map(cub, map_cpy, length))
 	{
 		free_tab(map_cpy);

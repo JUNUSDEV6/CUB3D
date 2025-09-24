@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_elements.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:51:32 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/24 15:51:34 by yohanafi         ###   ########.fr       */
+/*   Updated: 2024/09/26 11:34:55 by rdendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static int	check_existence(char **cub, char *element)
 		return (1);
 	i = 0;
 	tab = NULL;
-	while (cub[i] && i < 6)
+	while (cub[i])
 	{
 		if (tab)
 			free_tab(tab);
@@ -96,7 +96,8 @@ static int	check_existence(char **cub, char *element)
 		if (cub[i])
 			i++;
 	}
-	free_tab(tab);
+	if (tab)
+		free_tab(tab);
 	return (1);
 }
 
@@ -113,8 +114,8 @@ int	missing_element(char **cub)
 	if (check_existence(cub, "EA"))
 		return (error("Missing EA texture"));
 	if (check_existence(cub, "F"))
-		return (error("Missing F texture"));
+		return (error("Missing F color"));
 	if (check_existence(cub, "C"))
-		return (error("Missing C texture"));
+		return (error("Missing C color"));
 	return (0);
 }

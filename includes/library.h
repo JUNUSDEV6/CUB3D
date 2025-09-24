@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   library.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 11:28:12 by rdendonc          #+#    #+#             */
-/*   Updated: 2024/09/25 11:28:13 by rdendonc         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:24:26 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@
 # define X_EVENT_KEY_PRESS	2
 # define X_EVENT_KEY_EXIT	17
 
-/*
-** Keyboard & ARROWS
-*/
+/* KEYBOARD & ARROWS */
 
 # define K_AR_L 123
 # define K_AR_R 124
@@ -34,9 +32,7 @@
 # define K_ESC 53
 # define K_TAB 48
 
-/*
-** Mouse
-*/
+/* MOUSE */
 
 # define M_CLK_L 1
 # define M_CLK_R 3
@@ -55,6 +51,11 @@
 # define GO_LEFT 3
 # define GO_RIGHT 4
 
+# define WIDTH 640
+# define HEIGHT 480
+# define TEXWIDTH 64
+# define TEXHEIGHT 64
+
 # include "libft.h"
 # include <mlx.h>
 # include <stdio.h>
@@ -63,11 +64,6 @@
 # include <errno.h>
 # include <math.h>
 # include <stdbool.h>
-
-# define WIDTH 640
-# define HEIGHT 480
-# define TEXWIDTH 64
-# define TEXHEIGHT 64
 
 typedef struct s_raycst
 {
@@ -184,5 +180,6 @@ void			ft_exit(t_cub *cub, char *msg, int code);
 void			free_tab(char **tab);
 void			free_all(t_cub *cub);
 void			print_tab(char **tab);
+int				ft_close(t_cub *cub);
 
 #endif

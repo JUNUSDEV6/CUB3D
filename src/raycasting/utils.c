@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:36:15 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/25 12:06:21 by rdendonc         ###   ########.fr       */
+/*   Updated: 2024/09/26 12:24:55 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "library.h"
+
+int	ft_close(t_cub *cub)
+{
+	ft_exit(cub, NULL, 0);
+	return (0);
+}
 
 static int	**copy_char_to_int_map(t_cub *cub, char **char_map, int i, int j)
 {
@@ -106,4 +112,6 @@ void	init_data(t_cub *cub)
 	cub->height_m = 0;
 	cub->width_m = 0;
 	cub->m = copy_char_to_int_map(cub, cub->map, -1, -1);
+	if (!cub->m)
+		ft_exit(cub, "Problem when malloc map", EXIT_FAILURE);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_mlx.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:11:35 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/25 12:16:47 by rdendonc         ###   ########.fr       */
+/*   Updated: 2024/09/26 12:24:44 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,10 @@ void	init_game(t_cub *cub)
 	{
 		mlx_destroy_window(cub->mlx_ptr, cub->mlx_window);
 		free(cub->mlx_ptr);
-		exit (1);
+		ft_exit(cub, NULL, EXIT_FAILURE);
 	}
 	mlx_loop_hook(cub->mlx_ptr, &main_loop, cub);
 	mlx_hook(cub->mlx_window, X_EVENT_KEY_PRESS, 0, &key_press, cub);
+	mlx_hook(cub->mlx_window, 17, 0, ft_close, cub);
 	mlx_loop(cub->mlx_ptr);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_textures.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdendonc <rdendonc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yohanafi <yohanafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 15:51:20 by yohanafi          #+#    #+#             */
-/*   Updated: 2024/09/25 12:16:14 by rdendonc         ###   ########.fr       */
+/*   Updated: 2024/09/26 12:23:59 by yohanafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ int	get_textures(t_cub *cub)
 	cub->textures[1] = create_img(cub, "SO");
 	if (!cub->textures[1])
 		return (error("Error: Missing SO texture"));
-	cub->textures[2] = create_img(cub, "WE");
-	if (!cub->textures[2])
-		return (error("Error: Missing WE texture"));
-	cub->textures[3] = create_img(cub, "EA");
+	cub->textures[3] = create_img(cub, "WE");
 	if (!cub->textures[3])
+		return (error("Error: Missing WE texture"));
+	cub->textures[2] = create_img(cub, "EA");
+	if (!cub->textures[2])
 		return (error("Error: Missing EA texture"));
 	return (1);
 }
